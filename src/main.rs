@@ -1,34 +1,93 @@
-use std::env;
+// Mods
+mod commands;
+
+// Imports
+use std::{
+    collections::HashSet,
+    env,
+    sync::Arc,
+};
 
 use serenity::{
-    model::{channel::Message, gateway::Ready},
+    client::bridge::gateway::ShardManager,
+    framework::{
+        StandardFramework,
+        standard::macros::group,
+    },
+    model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
+
+use log::{error, info};
+
+use commands::{
+    verdict::*,
+};
+
+// Structs
+struct ShardManagerContainer;
+
+impl TypeMapKey for ShardManagerContainer {
+    type Value = Arc<Mutex<ShardManager>>;
+}
 
 struct Handler;
 
 impl EventHandler for Handler {
-    fn message(&self, ctx: Context, msg:Message) {
-        if msg.content == "!ping" {
-            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!") {
-                println!("Errored sending message: {}", why)
-            }
-        }
-    }
-
     fn ready(&self, _: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
     }
+
+    fn resume(&self, _: Context, _: ResumedEvent) {
+        info!("Resumed");
+    }
 }
 
+// Command Groups
+#[group]
+#[commands(verdict)]
+struct General;
+
 fn main() {
+    // Set up ENVs
+    kankyo::load().expect("Couldn't load .env file");
+
+    // Initiate logger
+    env_logger::init();
+
+    // Get the bot token
     let token = env::var("DISCORD_TOKEN")
         .expect("No token found!");
     
-        let mut client = Client::new(&token, Handler).expect("Issue creating client!");
+    // Get the client
+    let mut client = Client::new(&token, Handler).expect("Err creating client");
 
+    // Set up shard manager
+    {
+        let mut data = client.data.write();
+        data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
+    }
 
-        if let Err(why) = client.start() {
-            println!("Client error: {:?}", why);
-        }
+    // Get owners
+    let owners = match client.cache_and_http.http.get_current_application_info() {
+        Ok(info) => {
+            let mut set = HashSet::new();
+            set.insert(info.owner.id);
+
+            set
+        },
+        Err(why) => panic!("Couldn't get application info: {:?}", why),
+    };
+    
+    // Set up standard framework
+    client.with_framework(StandardFramework::new()
+        .configure(|c| c
+            .owners(owners)
+            .prefix("!"))
+        .group(&GENERAL_GROUP));
+
+    // Start the client
+    if let Err(why) = client.start() {
+        println!("Client error: {:?}", why);
+    }
 }
