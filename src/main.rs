@@ -48,8 +48,8 @@ impl EventHandler for Handler {
 #[commands(verdict)]
 struct General;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Set up ENVs
     kankyo::load().expect("Couldn't load .env file");
 
