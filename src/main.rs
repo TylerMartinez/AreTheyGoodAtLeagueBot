@@ -18,7 +18,7 @@ use serenity::{
     prelude::*,
 };
 
-use log::{error, info};
+use log::{info};
 
 use commands::{
     verdict::*,
@@ -48,7 +48,8 @@ impl EventHandler for Handler {
 #[commands(verdict)]
 struct General;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Set up ENVs
     kankyo::load().expect("Couldn't load .env file");
 
@@ -90,4 +91,6 @@ fn main() {
     if let Err(why) = client.start() {
         println!("Client error: {:?}", why);
     }
+
+    Ok(())
 }
