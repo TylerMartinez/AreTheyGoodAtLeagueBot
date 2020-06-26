@@ -2,7 +2,14 @@ use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
 
-use crate::commands::riot;
+use crate::models::{
+    matches::*,
+    summoner::*,
+};
+
+use crate::utils::{
+    riot::*,
+};
 
 use reqwest;
 
@@ -18,7 +25,7 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
     let client = reqwest::blocking::Client::new();
 
     // Build Summonner info Url and the get it
-    let url: String = riot::get_riot_url(
+    let url: String = get_riot_url(
         "na1",
         "summoner/v4/summoners",
         "by-name",
@@ -29,10 +36,10 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
     let summoner_info = client
         .get(reqwest::Url::parse(&url[..]).unwrap())
         .send()?
-        .json::<riot::Summoner>()?;
+        .json::<Summoner>()?;
 
     // Build Match infor url and get it
-    let url: String = riot::get_riot_url(
+    let url: String = get_riot_url(
         "na1",
         "match/v4/matchlists",
         "by-account",
@@ -43,7 +50,7 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
     let match_list = client
         .get(reqwest::Url::parse(&url[..]).unwrap())
         .send()?
-        .json::<riot::MatchList>()?;
+        .json::<MatchList>()?;
 
     let _ = msg.channel_id.say(
         &ctx.http,
@@ -54,6 +61,53 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
     );
 
     // Lets get the individual match data to pull more insight
+    for match_info in match_list.matches.iter() {
+
+        // Build match url
+        let url: String = get_riot_url(
+            "na1",
+            "match/v4",
+            "matches",
+            &format!("{}", match_info.game_id)[..],
+            &mut "".into(),
+        );
+
+        let _ = msg.channel_id.say(
+            &ctx.http,
+            format!("URL: {}", url)
+        );
+
+        // Get Match Infodevweb
+        match client
+        .get(reqwest::Url::parse(&url[..]).unwrap())
+        .send()?
+        .json::<Match>() {
+            Ok(_) => { msg.channel_id.say(
+                &ctx.http,
+                format!("URL: {}", url)
+            )?;},
+            Err(e) => {msg.channel_id.say(
+                &ctx.http,
+                format!("URL: {}", e)
+            )?;
+            return Ok(())
+            }
+        }
+
+        // let _ = msg.channel_id.say(
+        //     &ctx.http,
+        //     format!(
+        //         "{} - {}",
+        //         current_match.gameId,
+        //         current_match.gameMode
+        //     ),
+        // );
+    }
+
+    let _ = msg.channel_id.say(
+        &ctx.http,
+        "done"
+    );
 
     Ok(())
 }

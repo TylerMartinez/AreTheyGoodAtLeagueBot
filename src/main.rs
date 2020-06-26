@@ -1,5 +1,7 @@
 // Mods
 mod commands;
+mod models;
+mod utils;
 
 // Imports
 use std::{
