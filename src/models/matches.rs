@@ -4,7 +4,7 @@ use std::collections::HashMap;
 // Models
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MatchList {  
+pub struct MatchList {
     #[serde(default)]
     pub start_index: i32,
 
@@ -85,6 +85,7 @@ pub struct Match {
     #[serde(default)]
     pub game_mode: String,
 
+    #[serde(default)]
     pub participants: Vec<Participant>,
 }
 
@@ -140,6 +141,7 @@ pub struct TeamStats {
     #[serde(default)]
     pub inhibitor_kills: i32,
 
+    #[serde(default)]
     pub bans: Vec<TeamBans>,
 
     #[serde(default)]
@@ -195,7 +197,7 @@ pub struct Participant {
     #[serde(default)]
     pub champion_id: i32,
 
-    #[serde(default = Vec::new())]
+    #[serde(default)]
     pub runes: Vec<Rune>,
 
     pub stats: ParticipantStats,
@@ -236,53 +238,47 @@ pub struct ParticipantStats {
 
     #[serde(default)]
     pub item2: i32,
-    
     #[serde(default)]
     pub total_units_healed: i32,
-    
     #[serde(default)]
     pub item1: i32,
-    
     #[serde(default)]
     pub largest_multi_kill: i32,
-    
     #[serde(default)]
     pub gold_earned: i32,
 
     #[serde(default)]
     pub first_inhibitor_kill: bool,
-    
+
     #[serde(default)]
     pub physical_damage_taken: i64,
-    
+
     #[serde(default)]
     pub node_neutralize_assist: i32,
-    
+
     #[serde(default)]
     pub total_player_score: i32,
-    
+
     #[serde(default)]
     pub rune_id: i32,
-    
+
     #[serde(default)]
     pub champ_level: i32,
-    
+
     #[serde(default)]
     pub damage_dealt_to_objectives: i64,
-    
+
     #[serde(default)]
     pub total_damage_taken: i64,
-    
+
     #[serde(default)]
     pub neutral_minions_killed: i32,
-   
+
     #[serde(default)]
     pub deaths: i32,
 
-    
     #[serde(default)]
     pub triple_kills: i32,
-    
     #[serde(default)]
     pub magic_damage_dealt_to_champions: i64,
 
@@ -291,7 +287,6 @@ pub struct ParticipantStats {
 
     #[serde(default)]
     pub penta_kills: i32,
-    
     #[serde(default)]
     pub damage_self_mitigated: i64,
 
@@ -339,7 +334,6 @@ pub struct ParticipantStats {
 
     #[serde(default)]
     pub neutral_minions_killed_team_jungle: i32,
-    
     #[serde(default)]
     pub first_inhibitor_assist: bool,
 
@@ -522,7 +516,6 @@ pub struct ParticipantStats {
 
     #[serde(default)]
     pub perk3_var2: i32,
-    
     #[serde(default)]
     pub perk3_var3: i32,
 
@@ -589,7 +582,6 @@ pub struct ParticipantTimeline {
 
     #[serde(default)]
     pub gold_per_min_deltas: HashMap<String, f64>,
-
 }
 
 #[derive(Deserialize)]
@@ -601,3 +593,5 @@ pub struct Mastery {
     #[serde(default)]
     pub mastery_id: i32,
 }
+
+// Functions
