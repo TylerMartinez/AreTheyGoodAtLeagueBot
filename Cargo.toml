@@ -1,0 +1,15 @@
+[package]
+name = "are_they_good_at_league_bot"
+version = "0.1.0"
+authors = ["Tyler Martinez <tyler.martinez89@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+env_logger = "0.6"
+kankyo = "0.2"
+log = "0.4"
+reqwest = { version = "0.10.6", features = ["json", "blocking"] }
+serde = { version = "1.0", features = ["derive"] }
+
+[dependencies.serenity]
+features = ["cache", "framework", "standard_framework", "rustls_backend"]
