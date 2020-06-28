@@ -1,6 +1,8 @@
 # AreTheyGoodAtLeagueBot
 Discord bot that tells you if your friends are good at League of Legends
 
+![Example Response](https://i.imgur.com/aXX79jw.png)
+
 # Commands
 ### !verdict summonerName
   Returns a few stats and a final verdict on whether the provided summoner is good at league based on their last 15 games
