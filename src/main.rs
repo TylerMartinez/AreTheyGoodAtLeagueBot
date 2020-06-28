@@ -4,27 +4,18 @@ mod models;
 mod utils;
 
 // Imports
-use std::{
-    collections::HashSet,
-    env,
-    sync::Arc,
-};
+use std::{collections::HashSet, env, sync::Arc};
 
 use serenity::{
     client::bridge::gateway::ShardManager,
-    framework::{
-        StandardFramework,
-        standard::macros::group,
-    },
+    framework::{standard::macros::group, StandardFramework},
     model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
 
-use log::{info};
+use log::info;
 
-use commands::{
-    verdict::*,
-};
+use commands::verdict::*;
 
 // Structs
 struct ShardManagerContainer;
@@ -50,7 +41,6 @@ impl EventHandler for Handler {
 #[commands(verdict)]
 struct General;
 
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Set up ENVs
     kankyo::load().expect("Couldn't load .env file");
@@ -59,9 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
     // Get the bot token
-    let token = env::var("DISCORD_TOKEN")
-        .expect("No token found!");
-    
+    let token = env::var("DISCORD_TOKEN").expect("No token found!");
     // Get the client
     let mut client = Client::new(&token, Handler).expect("Err creating client");
 
@@ -78,16 +66,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             set.insert(info.owner.id);
 
             set
-        },
+        }
         Err(why) => panic!("Couldn't get application info: {:?}", why),
     };
-    
     // Set up standard framework
-    client.with_framework(StandardFramework::new()
-        .configure(|c| c
-            .owners(owners)
-            .prefix("!"))
-        .group(&GENERAL_GROUP));
+    client.with_framework(
+        StandardFramework::new()
+            .configure(|c| c.owners(owners).prefix("!").delimiters(vec![":"]))
+            .group(&GENERAL_GROUP),
+    );
 
     // Start the client
     if let Err(why) = client.start() {
