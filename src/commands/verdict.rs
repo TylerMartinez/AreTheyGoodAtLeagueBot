@@ -4,6 +4,9 @@ use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
 
+use chrono::prelude::*;
+use chrono::Utc;
+
 use crate::models::{matches::*, summoner::*};
 
 use crate::utils::{rest::*, riot::*};
@@ -11,12 +14,18 @@ use crate::utils::{rest::*, riot::*};
 use reqwest;
 
 #[command]
-fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
+fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
     // Start Message
     let _ = msg.channel_id.say(
         &ctx.http,
         "Give me a second while I look this summoner up...",
     );
+
+    let name = args.single::<String>()?;
+    let option = match args.single::<String>() {
+        Ok(x) => x,
+        Err(_) => "".into(),
+    };
 
     // Intialize a blocking client for now
     let client = reqwest::blocking::Client::new();
@@ -26,7 +35,7 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
         "na1",
         "summoner/v4/summoners",
         "by-name",
-        args.rest(),
+        &name[..],
         &mut "".into(),
     );
 
@@ -47,7 +56,7 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
         "match/v4/matchlists",
         "by-account",
         &summoner_info.accountId[..],
-        &mut "endIndex=15".into(),
+        &mut "queue=700&queue=440&queue=430&queue=420&queue=400&endIndex=15".into(),
     );
 
     let match_list = match make_get_request::<MatchList>(
@@ -75,6 +84,14 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
     let mut wins = HashMap::<String, i32>::new();
     let mut roles = HashMap::<String, i32>::new();
     let mut champs = HashMap::<i32, i32>::new();
+
+    // If they ask for details lets tell them
+    if option == "detailed" {
+        let _ = msg.channel_id.say(
+            &ctx.http,
+            "Here are the exact match details becuase you don't believe me:",
+        );
+    }
 
     // Lets get the individual match data to pull more insight
     for match_info in match_list.matches.iter() {
@@ -124,6 +141,24 @@ fn verdict(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
             .entry(format!("{} {}", match_info.role, match_info.lane))
             .or_insert(0) += 1;
         *wins.entry(team_stats.win[..].into()).or_insert(0) += 1;
+
+        // Print details if wanted
+        if option == "detailed" {
+            let naive = NaiveDateTime::from_timestamp(match_info.timestamp / 1000, 0);
+            let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+            let newdate = datetime.format("%Y-%m-%d %H:%M:%S");
+
+            let _ = msg.channel_id.say(
+                &ctx.http,
+                format!(
+                    "{} - {} - {} - {}",
+                    newdate,
+                    get_queue_name(match_info.queue),
+                    get_champion_name(match_info.champion),
+                    team_stats.win
+                ),
+            );
+        }
     }
 
     // Print some stats

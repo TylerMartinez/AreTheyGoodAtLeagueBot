@@ -20,6 +20,17 @@ pub fn get_riot_url(
     )
 }
 
+pub fn get_queue_name(id: i32) -> String {
+    match id {
+        700 => "Clash Game".into(),
+        440 => "5v5 Ranked Flex".into(),
+        430 => "5v5 Blind Pick".into(),
+        420 => "5v5 Ranked Solo".into(),
+        400 => "5v5 Draft Pick games".into(),
+        _ => "Haven't heard of this queue type before".into(),
+    }
+}
+
 pub fn get_champion_name(id: i32) -> String {
     match id {
         266 => "Aatrox".into(),
