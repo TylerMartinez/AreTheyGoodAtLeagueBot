@@ -151,9 +151,10 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
             let _ = msg.channel_id.say(
                 &ctx.http,
                 format!(
-                    "{} - {} - {} - {}",
+                    "{} - {} - {} - {} - {}",
                     newdate,
                     get_queue_name(match_info.queue),
+                    format!("{} {}", match_info.role, match_info.lane),
                     get_champion_name(match_info.champion),
                     team_stats.win
                 ),
@@ -206,8 +207,7 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
             &ctx.http,
             format!(
                 "{} is insanely good at League with a winrate of {}%",
-                args.rest(),
-                percent
+                name, percent
             ),
         );
     } else if win_rate > 0.75 {
@@ -215,8 +215,7 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
             &ctx.http,
             format!(
                 "{} is pretty good at League with a winrate of {}%",
-                args.rest(),
-                percent
+                name, percent
             ),
         );
     } else if win_rate > 0.5 {
@@ -224,8 +223,7 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
             &ctx.http,
             format!(
                 "{} is decent at League with a winrate of {}%",
-                args.rest(),
-                percent
+                name, percent
             ),
         );
     } else if win_rate > 0.25 {
@@ -233,27 +231,18 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
             &ctx.http,
             format!(
                 "{} is not that good at League with a winrate of {}%",
-                args.rest(),
-                percent
+                name, percent
             ),
         );
     } else if win_rate > 0.1 {
         let _ = msg.channel_id.say(
             &ctx.http,
-            format!(
-                "{} is bad at League with a winrate of {}%",
-                args.rest(),
-                percent
-            ),
+            format!("{} is bad at League with a winrate of {}%", name, percent),
         );
     } else {
         let _ = msg.channel_id.say(
             &ctx.http,
-            format!(
-                "{} is trash at League with a winrate of {}%",
-                args.rest(),
-                percent
-            ),
+            format!("{} is trash at League with a winrate of {}%", name, percent),
         );
     }
 
