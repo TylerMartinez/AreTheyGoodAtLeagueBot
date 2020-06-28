@@ -89,7 +89,7 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
     if option == "detailed" {
         let _ = msg.channel_id.say(
             &ctx.http,
-            "Here are the exact match details becuase you don't believe me:",
+            "Here are the exact match details because you don't believe me:",
         );
     }
 
