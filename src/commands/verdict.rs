@@ -202,49 +202,21 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
 
     let percent = format!("{:.2}", win_rate)[2..].to_string();
 
-    if win_rate > 0.9 {
-        let _ = msg.channel_id.say(
-            &ctx.http,
-            format!(
-                "{} is insanely good at League with a winrate of {}%",
-                name, percent
-            ),
-        );
-    } else if win_rate > 0.75 {
-        let _ = msg.channel_id.say(
-            &ctx.http,
-            format!(
-                "{} is pretty good at League with a winrate of {}%",
-                name, percent
-            ),
-        );
-    } else if win_rate > 0.5 {
-        let _ = msg.channel_id.say(
-            &ctx.http,
-            format!(
-                "{} is decent at League with a winrate of {}%",
-                name, percent
-            ),
-        );
-    } else if win_rate > 0.25 {
-        let _ = msg.channel_id.say(
-            &ctx.http,
-            format!(
-                "{} is not that good at League with a winrate of {}%",
-                name, percent
-            ),
-        );
-    } else if win_rate > 0.1 {
-        let _ = msg.channel_id.say(
-            &ctx.http,
-            format!("{} is bad at League with a winrate of {}%", name, percent),
-        );
-    } else {
-        let _ = msg.channel_id.say(
-            &ctx.http,
-            format!("{} is trash at League with a winrate of {}%", name, percent),
-        );
-    }
+    let verdict_string = match (win_rate*100.0) as i32 {
+        90..=100 => "insanely good",
+        75..=89 =>  "pretty good",
+        50..=74 =>  "decent",
+        25..=49 =>  "not that good",
+        _ =>        "trash"
+    };
+    
+    let _ = msg.channel_id.say(
+        &ctx.http,
+        format!(
+            "{} is {} at League with a winrate of {}%",
+            name, verdict_string, percent
+        ),
+    );
 
     Ok(())
 }
