@@ -1,0 +1,31 @@
+{
+    "family": "DeployBot",
+    "containerDefinitions": [
+        {
+            "name": "AreTheyGoodAtLeagueBot",
+            "image": "",
+            "cpu": 512,
+            "memory": 1024,
+            "essential": true,
+            "secrets": [
+                {
+                    "name": "",
+                    "valueFrom": ""
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/tyler",
+                    "awslogs-region": "us-east-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048"
+}
