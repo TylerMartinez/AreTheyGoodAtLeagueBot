@@ -1,6 +1,6 @@
 {
     "family": "DeployBot",
-    "executionRoleArn": "arn:aws:iam::192247317913:role/ECSTask"
+    "executionRoleArn": "arn:aws:iam::192247317913:role/ECSTask",
     "containerDefinitions": [
         {
             "name": "AreTheyGoodAtLeagueBot",
