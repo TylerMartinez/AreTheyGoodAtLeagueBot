@@ -18,7 +18,7 @@ fn verdict(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
     // Start Message
     let _ = msg.channel_id.say(
         &ctx.http,
-        "Give me a second while I look this summoner up...",
+        "Give me a moment while I look this summoner up...",
     );
 
     let name = args.single::<String>()?;
