@@ -20,7 +20,17 @@
                     "awslogs-region": "us-east-2",
                     "awslogs-stream-prefix": "ecs"
                 }
-            }
+            },
+            "environment": [
+                {
+                    "name": "DISCORD_TOKEN",
+                    "value": "<discord_secret>"
+                },
+                {
+                    "name": "RIOT_TOKEN",
+                    "value": "<riot_secret>"
+                }
+            ]
         }
     ],
     "requiresCompatibilities": [
