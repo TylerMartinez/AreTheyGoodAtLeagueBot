@@ -65,6 +65,14 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
+    - name: Add secrets to Task Definition
+      env:
+        DISCORD_SECRET: ${{secrets.DISCORD_TOKEN}}
+        RIOT_SECRET: ${{secrets.RIOT_TOKEN}}
+      run: |
+        sed -i "s/<discord_secret>/$DISCORD_SECRET/g" ecs.json 
+        sed -i "s/<riot_secret>/$RIOT_SECRET/g" ecs.json 
+        
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
