@@ -42,8 +42,8 @@ impl EventHandler for Handler {
 struct General;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Set up ENVs
-    kankyo::load().expect("Couldn't load .env file");
+    // Uncomment to use .env file
+    // kankyo::load().expect("Couldn't load .env file");
 
     // Initiate logger
     env_logger::init();

@@ -5,4 +5,4 @@ COPY . .
 
 RUN cargo install --path .
 
-CMD cargo run
+CMD ["are_they_good_at_league_bot"]
