@@ -13,7 +13,15 @@
                     "name": "",
                     "valueFrom": ""
                 }
-            ]
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "tyler",
+                    "awslogs-region": "us-east-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
         }
     ],
     "requiresCompatibilities": [
